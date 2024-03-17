@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}
+{%load static%}
+  {{ post.title_tag }}
+{% endblock %}
+
+{% block content %}
+  <h1 class="my-4">{{ post.title }}</h1>
+  <small>By: {{ post.author.first_name }} {{ post.author.last_name }} - {{ post.post_date }}<br />
+    {% if user.is_authenticated %}
+      <a href="{% url 'update_post' post.pk %}" class="btn btn-primary">Edit</a>
+      <a href="{% url 'delete_post' post.pk %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+  </small>
+
+  {% if post.header_image %}
+    <img src="{{ post.header_image.url }}" />
+  {% endif %}
+
+  <hr /><br />
+  {{ post.body|safe }}
+
+  <br /><br />
+  <h1>Comments...</h1>
+  <br />
+  {% if not post.comments.all %}
+    No Comments Yet...<a href="{% url 'add_comment' post.pk %}" class="btn btn-success">Add One</a>
+  {% else %}
+    <a href="{% url 'add_comment' post.pk %}">
+      <button class="btn btn-primary">Add Comment</button>
+    </a>
+
+    <br /><br />
+
+    {% for comment in post.comments.all %}
+      <strong>{{ comment.name }} - {{ comment.date_added }}</strong><br />
+      {{ comment.body }}<br /><br /> 
+    {% endfor %}
+  {% endif %}
+  <br /><br/>
+
+  <div class="card mb-3">
+    <div class="row no-gutters">
+      <div class="col-md-2">
+        {% if post.author.profile.profile_pic %}
+          <img src="{{ post.author.profile.profile_pic.url }}" class="card-img">
+        {% else %}
+          <img src="{% static 'theblog/images/default_profile_pic.png' %}" class="card-img"> 
+        {% endif %}
+      </div>
+      <div class="col-md-10">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.author.first_name }} {{ post.author.last_name }}</h5>
+
+          <p class="small text-muted">
+            {% if post.author.profile %}
+              <a href="{% url 'show_profile_page' post.author.profile.id %}">Profile Page</a>
+            {% endif %}
+
+            {% if post.author.profile and post.author.profile.website_url %}
+              | <a href="{{ post.author.profile.website_url }}">Website</a>
+            {% endif %}
+
+            {% if post.author.profile and post.author.profile.facebook_url %}
+              | <a href="{{ post.author.profile.facebook_url }}">Facebook</a>
+            {% endif %}
+
+            {% if post.author.profile and post.author.profile.twitter_url %}
+              | <a href="{{ post.author.profile.twitter_url }}">Twitter</a>
+            {% endif %}
+
+            {% if post.author.profile and post.author.profile.instagram_url %}
+              | <a href="{{ post.author.profile.instagram_url }}">Instagram</a>
+            {% endif %}
+
+            {% if post.author.profile and post.author.profile.pinterest_url %}
+              | <a href="{{ post.author.profile.pinterest_url }}">Pinterest</a>
+            {% endif %}
+          </p>
+
+          {% if post.author.profile %}
+            <p class="card-text">{{ post.author.profile.bio }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br />
+  <a href="{% url 'home' %}" class="btn btn-secondary">Return</a>
+{% endblock %}
