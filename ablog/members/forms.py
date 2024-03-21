@@ -51,6 +51,10 @@ class EditProfileForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password')
+
+    def __init__(self, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+        self.fields.pop('password')
         
         
 # class PasswordChangingForm(PasswordChangeForm):
