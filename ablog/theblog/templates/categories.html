@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if category_posts %}    
+
+	<h1>{{ cats }}</h1>
+
+	<ul class="list-group">
+    {% for post in category_posts %}
+    <li class="list-group-item list-group-item-secondary">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <a href="{% url 'article-detail' post.pk %}" class="text-decoration-none">
+                    <h3 class="mb-0">{{ post.title }}</h3>
+                </a>
+                <small class="text-muted">
+                    by {{ post.author.first_name }} {{ post.author.last_name }} - {{ post.post_date }}
+                </small>
+                <p class="mb-0">{{ post.body|slice:":200"|safe }}</p>
+            </div>
+            <div>
+                {% if user.is_authenticated %}
+                <div class="btn-group" role="group">
+                    <a href="{% url 'update_post' post.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="{% url 'delete_post' post.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+
+
+{% else %}
+	<h2>Sorry this page does not exist...</h2>
+{% endif %}
+
+{% endblock %}
